@@ -1,2 +1,2 @@
 # brickbreaker
-JS canvas project for Softdev2
+JS project for Softdev2 using canvas
