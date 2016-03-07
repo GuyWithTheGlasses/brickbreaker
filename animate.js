@@ -8,7 +8,7 @@ var ctx = c.getContext("2d");
 //Start button
 var start = document.getElementById("start");
 
-//Y-coordinate and dimensions of the paddle
+//Coordinates and dimensions of the paddle
 var py = 520;
 var px = 0;
 var pwidth = 50;
@@ -91,10 +91,10 @@ start.addEventListener("click", function(){
     }
 
     //Draw ball in initial position
-    ctx.beginPath();
+    //ctx.beginPath();
     ctx.arc(ballx, bally, ballr, 0, 2 * Math.PI);
-    ctx.closePath();
     ctx.fill();
+    //ctx.beginPath();
 });
 
 /*------------------------- Ball Movement & Unit Collision -----------------------------*/
@@ -102,9 +102,10 @@ start.addEventListener("click", function(){
 //Moves the ball around the canvas
 var moveBall = function(){
     //Erase the old ball
-    ctx.clearRect(ballx - ballr - 1, bally - ballr - 1, ballr * 2 + 1, ballr * 2 + 1);
-    //console.log("x = " + ballx);
-    //console.log("y = " + bally + "\n");
+    ctx.clearRect(ballx - ballr - 1, bally - ballr - 1, ballr*2 + 2, ballr*2 + 2);
+    //There are -1's and +2's here because not all of the ball was getting erased
+    //so this was just an easy fix
+    //In collision we consider these -1's and +2's as part of the ball's hitbox
 
     //Increment ballx and bally
     ballx += xvel;
@@ -124,7 +125,10 @@ var moveBall = function(){
     requestID = window.requestAnimationFrame(moveBall);
 };
 
-//Checks to see if the ball has hit the edge of the canvas
+//Checks to see if the ball has collided:
+//with the edge of the canvas - DONE
+//with the paddle - DONE 
+//with bricks - INCOMPLETE
 var collisionCheck = function(){
     //If the x value hits an extreme, negate xvel
     if (ballx <= ballr || ballx >= c.width-ballr){
@@ -134,10 +138,9 @@ var collisionCheck = function(){
     if (bally <= ballr || bally >= c.height-ballr){
 	     yvel *= -1;
     }
-    //check if hitting the paddle
-    if (bally + ballr >= py && ballx <= px + pwidth && ballx >= px) {
+    //Check if hitting the paddle from the top
+    if (yvel > 0 && bally + ballr == py - 2 && ballx <= px + pwidth && ballx >= px){
       console.log("hello");
-      //xvel *= -1;
       yvel *= -1;
     }
 };
