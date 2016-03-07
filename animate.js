@@ -146,6 +146,8 @@ var collisionCheck = function(){
     }
 };
 
+var isWhite = true;
+
 /*test function to see collision with bricks using color*/
 /*doesn't work :( */
 var collisionTest = function(){
@@ -155,9 +157,17 @@ var collisionTest = function(){
   var clipOffset = 5;
   var color = ctx.getImageData(ballx+clipOffset, bally+clipOffset,clipW,clipH);
   for (var i=0; i<clipL * 4; i+=4){
-    if (color.data[i]>0);
-    console.log("hi");
+    if (color.data[i]>0){
+      isWhite=true;
+      console.log("hi");
+    }
+    else {
+      isWhite=false;
+    }
     break;
+  }
+  if (!isWhite){
+    console.log('yes');
   }
 }
 
