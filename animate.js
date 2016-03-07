@@ -113,7 +113,7 @@ var moveBall = function(){
 
     //Check to see if collisions happened; if so, change velocities
     collisionCheck();
-    collisionTest();
+    colorCheck();
 
     //Draw the ball in its new location
     ctx.fillStyle = "#000000";
@@ -129,7 +129,6 @@ var moveBall = function(){
 //Checks to see if the ball has collided:
 //with the edge of the canvas - DONE
 //with the paddle - DONE 
-//with bricks - INCOMPLETE
 var collisionCheck = function(){
     //If the x value hits an extreme, negate xvel
     if (ballx <= ballr || ballx >= c.width-ballr){
@@ -146,13 +145,9 @@ var collisionCheck = function(){
     }
 };
 
-var isWhite = true;
-//Color of the block the ball collides with
-var pixelColor;
-
-/*test function to see collision with bricks using color*/
-/*doesn't work :( */
-var collisionTest = function(){
+//Checks to see if the color of the background changes
+//aka see if the ball has collided with a brick
+var colorCheck = function(){
     //Get the pixel colors from a square around the ball
     var color = ctx.getImageData(ballx-ballr-1, bally-ballr-1,ballr*2+2,ballr*2+2);
     
@@ -160,19 +155,22 @@ var collisionTest = function(){
     for (var i=0; i<color.data.length;i+=4){
 	console.log(color.data[i]);
 	//Check if any pixels are white
-	if (color.data[i]==255 && color.data[i+1]==255 && color.data[i+2]==255) {
-	    //isWhite=true;
-	    //console.log("white");
+	if (color.data[i]==255 && color.data[i+1]==255 && color.data[i+2]==255){
+	    console.log("good stuff");
 	}
 	//If not, then we have a collision; we can stop searching
 	else {
-	    //isWhite=false;
-	    //console.log('notwhite');
-	    pixelColor = [color.data[i], color.data[i+1], color.data[i+2]];
+	    var pixelColor = [color.data[i], color.data[i+1], color.data[i+2]];
 	    console.log(pixelColor);
+	    eraseBrick(pixelColor);
 	    break;
 	}
     }
 }
+
+//floodFills all pixels with same color as the collided one
+var eraseBrick = function(){
+    
+};
 
 start.addEventListener("click",moveBall);
