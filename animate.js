@@ -1,46 +1,58 @@
+
+/*------------------------------- Initialization ---------------------------------*/
+
 //Prep canvas for 2d drawing
 var c = document.getElementById("brick");
-var start = document.getElementById("start");
 var ctx = c.getContext("2d");
 
-//Set fill & stroke color
-ctx.fillStyle= "red";
-ctx.strokeStyle = "#000000";
+//Start button
+var start = document.getElementById("start");
 
 //Y-coordinate and dimensions of the paddle
 var py = 520;
 var pwidth = 50;
 var pheight = 10;
 
-// setting up for creation of blocks
+//setting up for creation of blocks
 var brickHeights = c.height/15;
 var brickWidths = c.width/6;
 
-//the coordinates of the ball
+//the coordinates of the ball & its radius
 var ballx = c.width/2;
 var bally = c.height/2;
+var ballr = 5;
 
-//the directional paths
-var left = false;
-var right = true;
-var up = false;
-var down = true;
+//x and y velocities
+var xvel = 1;
+var yvel = 1;
 
-//Draw initial paddle
-ctx.fillRect(c.width/2, py, 50, 10);
+//requestAnimationFrame ID
+var requestID;
+
+//Draw paddle at initial location
+ctx.fillRect(c.width/2, py, pwidth, pheight);
+
+/*----------------------------- Moving the Paddle --------------------------------*/
 
 //Moves paddle to mouse cursor's x value
 var movePaddle = function(e){
     //Erase the previously drawn paddle
     ctx.clearRect(0, py, c.width, c.height);
 
+    //Set fill & stroke color
+    ctx.fillStyle= "red";
+    ctx.strokeStyle = "#000000";
+
     //Draw a new paddle where the cursor is
     ctx.fillRect(e.offsetX, py, pwidth, pheight);
+    //Reset the path
+    ctx.beginPath();
 };
 
 //Tell entire canvas to listen for dragging
 c.addEventListener("mousemove", movePaddle);
 
+/*--------------------------- Brick & Ball Generation -----------------------------*/
 
 //start game and generate blocks
 start.addEventListener("click", function(){
@@ -48,10 +60,10 @@ start.addEventListener("click", function(){
     var y = 0;
 
     //forms each row
-    while (y <= 538/4) {
+    while (y <= c.height/4) {
 
         //forms each column
-        while (x <= 538) {
+        while (x <= c.width) {
           ctx.fillStyle = "rgb("+
               Math.floor(Math.random()*256)+","+
               Math.floor(Math.random()*256)+","+
@@ -74,69 +86,50 @@ start.addEventListener("click", function(){
         y += brickHeights;
     }
 
-    //form the ball
+    //Draw ball in initial position
     ctx.beginPath();
-  	ctx.arc(c.width / 2, c.height / 2, 5, 0, 2 * Math.PI);
-  	ctx.closePath();
-  	ctx.fill();
-
-    requestId = window.requestAnimationFrame(moveBall);
-
+    ctx.arc(ballx, bally, ballr, 0, 2 * Math.PI);
+    ctx.closePath();
+    ctx.fill();
 });
 
+/*------------------------------- Ball Movement ----------------------------------*/
 
-
-//TRIED TO MAKE THE CODE FOR THE BALL TO MOVE
-//DIDNT WORK YET BUT LEFT IT HERE IN CASE YOU GUYS COULD WORK WITH THIS
-// AN ISSUE WITH THIS IS ERASING AND REDRAWING THE CIRCLES, IF YOU USE clearRect THEN IT CLEARS EVERYTHING
-// INCLUDING THE BLOCKS ABOVE, ITD BE GOOD TO FIND A FUNCTION THAT REMOVES 1 SHAPE
+//Moves the ball around the canvas
 var moveBall = function(){
-    ctx.arc(ballx, bally, 5, 0, 2 * Math.PI);
+    //Erase the old ball
+    ctx.clearRect(ballx - ballr, bally - ballr, ballr * 2, ballr * 2);
+    //console.log("x = " + ballx);
+    //console.log("y = " + bally + "\n");
 
-    if (ballx >= 700 - 150) {
-      right = false;
-      left = true;
+    //Increment ballx and bally
+    ballx += xvel;
+    bally += yvel;
+    
+    //Check to see if collisions happened; if so, change velocities
+    borderCheck();
+
+    //Draw the ball in its new location
+    ctx.fillStyle = "#000000";
+    ctx.arc(ballx, bally, ballr, 0, 2 * Math.PI);
+    ctx.fill();
+    //Make sure to begin a new path to avoid trouble when filling
+    ctx.beginPath();
+
+    //Call this function again
+    requestID = window.requestAnimationFrame(moveBall);
+};
+
+//Checks to see if the ball has hit the edge of the canvas
+var borderCheck = function(){
+    //If the x value hits an extreme, negate xvel
+    if (ballx <= ballr || ballx >= c.width-ballr){
+	xvel *= -1;
+    } 
+    //If the y value his an extreme, negate yvel
+    if (bally <= ballr || bally >= c.height-ballr){
+	yvel *= -1;
     }
+};
 
-    else if (ballx <= 0) {
-      left = false;
-      right = true;
-    }
-
-    if (bally <= 0) {
-      up = false;
-      down = true;
-    }
-
-    else if (bally >= 700 - 100) {
-      down = false;
-      up = true;
-    }
-
-    if (right) {
-      ballx = ballx + 2;
-    }
-
-    else if (left) {
-      ballx = ballx - 2;
-    }
-
-    if (down) {
-      bally = bally + 2;
-    }
-
-    else if (up) {
-      bally = bally - 2;
-    }
-}
-/*
-var refresh = function(e){
-    ctx.fillRect(e.offsetX, e.offsetY, 50, 10);
-}
-
-var start = document.getElementById("start");
-start.addEventListener("click", function(){
-    console.log("hello");
-    requestId = window.requestAnimationFrame(refresh);
-});
-*/
+start.addEventListener("click",moveBall);
