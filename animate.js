@@ -10,6 +10,7 @@ var start = document.getElementById("start");
 
 //Y-coordinate and dimensions of the paddle
 var py = 520;
+var px = 0;
 var pwidth = 50;
 var pheight = 10;
 
@@ -18,7 +19,7 @@ var brickHeights = c.height/15;
 var brickWidths = c.width/6;
 
 //the coordinates of the ball & its radius
-var ballx = c.width/2;
+var ballx = c.width/3;
 var bally = c.height/2;
 var ballr = 5;
 
@@ -42,9 +43,10 @@ var movePaddle = function(e){
     //Set fill & stroke color
     ctx.fillStyle= "red";
     ctx.strokeStyle = "#000000";
+    px = e.offsetX;
 
     //Draw a new paddle where the cursor is
-    ctx.fillRect(e.offsetX, py, pwidth, pheight);
+    ctx.fillRect(px, py, pwidth, pheight);
     //Reset the path
     ctx.beginPath();
 };
@@ -93,6 +95,8 @@ start.addEventListener("click", function(){
     ctx.fill();
 });
 
+
+
 /*------------------------------- Ball Movement ----------------------------------*/
 
 //Moves the ball around the canvas
@@ -105,7 +109,7 @@ var moveBall = function(){
     //Increment ballx and bally
     ballx += xvel;
     bally += yvel;
-    
+
     //Check to see if collisions happened; if so, change velocities
     borderCheck();
 
@@ -124,12 +128,22 @@ var moveBall = function(){
 var borderCheck = function(){
     //If the x value hits an extreme, negate xvel
     if (ballx <= ballr || ballx >= c.width-ballr){
-	xvel *= -1;
-    } 
+	     xvel *= -1;
+    }
     //If the y value his an extreme, negate yvel
     if (bally <= ballr || bally >= c.height-ballr){
-	yvel *= -1;
+	     yvel *= -1;
+    }
+
+
+
+    //check if hitting the paddle
+    if (bally + ballr >= py && ballx <= px + pwidth && ballx >= px) {
+      console.log("hello");
+      xvel *= -1;
+      yvel *= -1;
     }
 };
+
 
 start.addEventListener("click",moveBall);
