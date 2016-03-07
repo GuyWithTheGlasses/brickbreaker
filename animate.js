@@ -68,22 +68,22 @@ start.addEventListener("click", function(){
 
         //forms each column
         while (x <= c.width) {
-          ctx.fillStyle = "rgb("+
-              Math.floor(Math.random()*256)+","+
-              Math.floor(Math.random()*256)+","+
-              Math.floor(Math.random()*256)+")";
+            ctx.fillStyle = "rgb("+
+		Math.floor(Math.random()*256)+","+
+		Math.floor(Math.random()*256)+","+
+		Math.floor(Math.random()*256)+")";
 
-          //these if else statements are to have it alternate between longer or shorter blocks
-          //doesn't work at the moment but would add some zest
-          if (x % 2 == 0) {
-              ctx.fillRect(x, y, brickWidths, brickHeights);
-              x += brickWidths;
-          }
+            //these if else statements are to have it alternate between longer or shorter blocks
+            //doesn't work at the moment but would add some zest
+            if (x % 2 == 0) {
+		ctx.fillRect(x, y, brickWidths, brickHeights);
+		x += brickWidths;
+            }
 
-          else {
-              ctx.fillRect(x, y, brickWidths, brickHeights);
-              x += brickWidths;
-          }
+            else {
+		ctx.fillRect(x, y, brickWidths, brickHeights);
+		x += brickWidths;
+            }
 
         }
         x = 0;
@@ -133,43 +133,46 @@ var moveBall = function(){
 var collisionCheck = function(){
     //If the x value hits an extreme, negate xvel
     if (ballx <= ballr || ballx >= c.width-ballr){
-	     xvel *= -1;
+	xvel *= -1;
     }
     //If the y value his an extreme, negate yvel
     if (bally <= ballr || bally >= c.height-ballr){
-	     yvel *= -1;
+	yvel *= -1;
     }
     //Check if hitting the paddle from the top
     if (yvel > 0 && bally + ballr == py - 2 && ballx <= px + pwidth && ballx >= px){
-      console.log("hello");
-      yvel *= -1;
+	console.log("hello");
+	yvel *= -1;
     }
 };
 
 var isWhite = true;
+//Color of the block the ball collides with
+var pixelColor;
 
 /*test function to see collision with bricks using color*/
 /*doesn't work :( */
 var collisionTest = function(){
-  var clipW = 20;
-  var clipH = 20;
-  var clipL = clipW * clipH;
-  var clipOffset = 5;
-  var color = ctx.getImageData(ballx+clipOffset, bally+clipOffset,clipW,clipH);
-  for (var i=0; i<clipL * 4; i+=4){
-    if (color.data[i]>0){
-      isWhite=true;
-      console.log("hi");
+    //Get the pixel colors from a square around the ball
+    var color = ctx.getImageData(ballx-ballr-1, bally-ballr-1,ballr*2+2,ballr*2+2);
+    
+    //Look through all the pixel colors
+    for (var i=0; i<color.data.length;i+=4){
+	console.log(color.data[i]);
+	//Check if any pixels are white
+	if (color.data[i]==255 && color.data[i+1]==255 && color.data[i+2]==255) {
+	    //isWhite=true;
+	    //console.log("white");
+	}
+	//If not, then we have a collision; we can stop searching
+	else {
+	    //isWhite=false;
+	    //console.log('notwhite');
+	    pixelColor = [color.data[i], color.data[i+1], color.data[i+2]];
+	    console.log(pixelColor);
+	    break;
+	}
     }
-    else {
-      isWhite=false;
-    }
-    break;
-  }
-  if (!isWhite){
-    console.log('yes');
-  }
 }
-
 
 start.addEventListener("click",moveBall);
