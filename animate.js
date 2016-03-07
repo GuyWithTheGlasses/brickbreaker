@@ -43,6 +43,8 @@ var movePaddle = function(e){
     //Set fill & stroke color
     ctx.fillStyle= "red";
     ctx.strokeStyle = "#000000";
+
+    //Record current x-coordinate
     px = e.offsetX;
 
     //Draw a new paddle where the cursor is
@@ -95,14 +97,12 @@ start.addEventListener("click", function(){
     ctx.fill();
 });
 
-
-
-/*------------------------------- Ball Movement ----------------------------------*/
+/*------------------------- Ball Movement & Unit Collision -----------------------------*/
 
 //Moves the ball around the canvas
 var moveBall = function(){
     //Erase the old ball
-    ctx.clearRect(ballx - ballr, bally - ballr, ballr * 2, ballr * 2);
+    ctx.clearRect(ballx - ballr - 1, bally - ballr - 1, ballr * 2 + 1, ballr * 2 + 1);
     //console.log("x = " + ballx);
     //console.log("y = " + bally + "\n");
 
@@ -111,7 +111,7 @@ var moveBall = function(){
     bally += yvel;
 
     //Check to see if collisions happened; if so, change velocities
-    borderCheck();
+    collisionCheck();
 
     //Draw the ball in its new location
     ctx.fillStyle = "#000000";
@@ -125,7 +125,7 @@ var moveBall = function(){
 };
 
 //Checks to see if the ball has hit the edge of the canvas
-var borderCheck = function(){
+var collisionCheck = function(){
     //If the x value hits an extreme, negate xvel
     if (ballx <= ballr || ballx >= c.width-ballr){
 	     xvel *= -1;
@@ -134,16 +134,12 @@ var borderCheck = function(){
     if (bally <= ballr || bally >= c.height-ballr){
 	     yvel *= -1;
     }
-
-
-
     //check if hitting the paddle
     if (bally + ballr >= py && ballx <= px + pwidth && ballx >= px) {
       console.log("hello");
-      xvel *= -1;
+      //xvel *= -1;
       yvel *= -1;
     }
 };
-
 
 start.addEventListener("click",moveBall);
