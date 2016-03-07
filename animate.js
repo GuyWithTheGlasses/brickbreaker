@@ -113,6 +113,7 @@ var moveBall = function(){
 
     //Check to see if collisions happened; if so, change velocities
     collisionCheck();
+    collisionTest();
 
     //Draw the ball in its new location
     ctx.fillStyle = "#000000";
@@ -144,5 +145,21 @@ var collisionCheck = function(){
       yvel *= -1;
     }
 };
+
+/*test function to see collision with bricks using color*/
+/*doesn't work :( */
+var collisionTest = function(){
+  var clipW = 20;
+  var clipH = 20;
+  var clipL = clipW * clipH;
+  var clipOffset = 5;
+  var color = ctx.getImageData(ballx+clipOffset, bally+clipOffset,clipW,clipH);
+  for (var i=0; i<clipL * 4; i+=4){
+    if (color.data[i]>0);
+    console.log("hi");
+    break;
+  }
+}
+
 
 start.addEventListener("click",moveBall);
