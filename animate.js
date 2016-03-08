@@ -91,10 +91,8 @@ start.addEventListener("click", function(){
     }
 
     //Draw ball in initial position
-    //ctx.beginPath();
     ctx.arc(ballx, bally, ballr, 0, 2 * Math.PI);
     ctx.fill();
-    //ctx.beginPath();
 });
 
 /*------------------------- Ball Movement & Unit Collision -----------------------------*/
@@ -152,6 +150,7 @@ var colorCheck = function(){
     var color = ctx.getImageData(ballx-ballr-1, bally-ballr-1,ballr*2+2,ballr*2+2);
     
     //Look through all the pixel colors
+    //NEEDS TO BE CHANGED TO 4 CORNERS ONLY
     for (var i=0 ; i<color.data.length ; i+=4){
 	console.log(color.data[i]);
 	//Check if any pixels are not white
@@ -165,6 +164,14 @@ var colorCheck = function(){
 	    yvel *= -1;
 	    eraseBrick2(pixelColor);
 	    break;
+	}
+    }
+}
+
+var eraseBrick2 = function(c) {
+    for (var i=0; i<6; i++) {
+	if (ballx > i * brickWidths && ballx<(i+1)*brickWidths) {
+	    ctx.clearRect(i*brickWidths,bally+brickHeights,brickWidths,brickHeights);
 	}
     }
 }
@@ -211,15 +218,5 @@ var eraseBrick = function(c){
     }
 };
 */
-
-
-var eraseBrick2 = function(c) {
-    for (var i=0; i<6; i++) {
-	if (ballx > i * brickWidths && ballx<(i+1)*brickWidths) {
-	    ctx.clearRect(i*brickWidths,bally+brickHeights,brickWidths,brickHeights);
-	}
-    }
-    
-}
 
 start.addEventListener("click",moveBall);
