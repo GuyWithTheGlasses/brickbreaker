@@ -148,13 +148,13 @@ var collisionCheck = function(){
 //Checks to see if the color of the background changes
 //aka see if the ball has collided with a brick
 var colorCheck = function(){
-    //Get the pixel colors from a square around the ball
+    //Get the pixel colors from all around the ball
     var color = ctx.getImageData(ballx-ballr-1, bally-ballr-1,ballr*2+2,ballr*2+2);
     
     //Look through all the pixel colors
-    for (var i=0; i<color.data.length;i+=4){
+    for (var i=0 ; i<color.data.length ; i+=4){
 	console.log(color.data[i]);
-	//Check if any pixels are white
+	//Check if any pixels are not white
 	if (color.data[i]==255 && color.data[i+1]==255 && color.data[i+2]==255){
 	    console.log("good stuff");
 	}
@@ -168,9 +168,45 @@ var colorCheck = function(){
     }
 }
 
+//THIS REALLY ISN'T WORKING GUYS LET'S JUST HARDCODE IT
 //floodFills all pixels with same color as the collided one
-var eraseBrick = function(){
-    
+var eraseBrick = function(c){
+    //Array of pixels we must check
+    //Starting from the detected pixel of different color
+    var pixels = [];
+    pixels.push([ballx-ballr-1, bally-ballr-1]);
+
+    //For filling in one pixel at a time
+    var id = ctx.createImageData(1,1);
+    var d = id.data;
+
+    while(pixels.length){
+	//Get the first pixel from the array and its color
+	var newPixel = pixels.pop();
+	var newx = newPixel[0];
+	var newy = newPixel[1];
+	var newPixColor = ctx.getImageData(newx, newy, 1, 1);
+
+	//If newPixel's color is the same as the first one, set it to white
+	if(newPixColor.data[0] == c[0] && 
+	   newPixColor.data[1] == c[1] && 
+	   newPixColor.data[2] == c[2]){
+	    //Set the image color to white
+	    d[0] = 255; //red
+	    d[1] = 255; //green
+	    d[2] = 255; //blue
+	    d[3] = 1; //alpa
+	    //Add the 1x1 image
+	    ctx.putImageData(id, newx, newy);
+
+	    //Add to the array the 4 pixels adjacent to the newPixel
+	    pixels.push([newx+1, newy]);
+	    pixels.push([newx-1, newy]);
+	    pixels.push([newx, newy+1]);
+	    pixels.push([newx, newy-1]);
+	}
+	//If it's not white, don't do anything
+    }
 };
 
 start.addEventListener("click",moveBall);
