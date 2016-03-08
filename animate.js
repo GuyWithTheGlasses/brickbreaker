@@ -155,14 +155,15 @@ var colorCheck = function(){
     for (var i=0 ; i<color.data.length ; i+=4){
 	console.log(color.data[i]);
 	//Check if any pixels are not white
-	if (color.data[i]==255 && color.data[i+1]==255 && color.data[i+2]==255){
+	if ((color.data[i]==255 && color.data[i+1]==255 && color.data[i+2]==255) || (color.data[i]==0 && color.data[i+1]==0 && color.data[i+2]==0)){
 	    console.log("good stuff");
 	}
 	//If not, then we have a collision; we can stop searching
 	else {
 	    var pixelColor = [color.data[i], color.data[i+1], color.data[i+2]];
 	    console.log(pixelColor);
-	    eraseBrick(pixelColor);
+	    yvel *= -1;
+	    eraseBrick2(pixelColor);
 	    break;
 	}
     }
@@ -170,6 +171,7 @@ var colorCheck = function(){
 
 //THIS REALLY ISN'T WORKING GUYS LET'S JUST HARDCODE IT
 //floodFills all pixels with same color as the collided one
+/*
 var eraseBrick = function(c){
     //Array of pixels we must check
     //Starting from the detected pixel of different color
@@ -208,5 +210,16 @@ var eraseBrick = function(c){
 	//If it's not white, don't do anything
     }
 };
+*/
+
+
+var eraseBrick2 = function(c) {
+    for (var i=0; i<6; i++) {
+	if (ballx > i * brickWidths && ballx<(i+1)*brickWidths) {
+	    ctx.clearRect(i*brickWidths,bally+brickHeights,brickWidths,brickHeights);
+	}
+    }
+    
+}
 
 start.addEventListener("click",moveBall);
