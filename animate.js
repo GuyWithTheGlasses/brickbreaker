@@ -155,16 +155,6 @@ var colorCheck = function(){
     //Bottom right corner
     var color4 = ctx.getImageData(ballx+ballr+1, bally+ballr+1,1,1);
     
-    /*
-    if(isColored(color1)){
-	if(isColored(color2)){
-	    if(isColored(color3)){
-		if(isColored(color4)){
-		}
-	    }
-	}
-    }
-    */
     isColored(color1);
     isColored(color2);
     isColored(color3);
@@ -180,7 +170,6 @@ var isColored = function(color){
 	var pixelColor = [color.data[0], color.data[1], color.data[2]];
 	console.log(pixelColor);
 	eraseBrick2(pixelColor);
-	yvel *= -1;
     } 
     return whiteOrBlack;
 };
@@ -188,10 +177,11 @@ var isColored = function(color){
 //Erases the bricks at set x and y values
 var eraseBrick2 = function(c) {
     for (var i=0; i<6; i++) {
-	if (ballx > i * brickWidths && ballx<(i+1)*brickWidths) {
+	if ((ballx > i*brickWidths) && (ballx < (i+1)*brickWidths)) {
 	    console.log("clearing");
 	    console.log(i);
-	    ctx.clearRect(i*brickWidths,bally+brickHeights,brickWidths,brickHeights);
+	    ctx.clearRect(i*brickWidths,bally-ballr-brickHeights-1,brickWidths,brickHeights);
+	    yvel *= -1;
 	}
     }
 }
