@@ -40,6 +40,7 @@ var whenLost = document.getElementById("lose-message");
 
 
 //Draw paddle at initial location
+ctx.fillStyle = "#FF0000";
 ctx.fillRect(c.width/2, py, pwidth, pheight);
 
 /*----------------------------- Moving the Paddle --------------------------------*/
@@ -50,7 +51,7 @@ var movePaddle = function(e){
     ctx.clearRect(0, py, c.width, c.height);
 
     //Set fill & stroke color
-    ctx.fillStyle= "red";
+    ctx.fillStyle= "#FF0000";
     ctx.strokeStyle = "#000000";
 
     //Record current x-coordinate
@@ -104,7 +105,7 @@ start.addEventListener("click", function(){
     ctx.fill();
 });
 
-/*------------------------- Ball Movement & Unit Collision -----------------------------*/
+/*-------------------------------- Ball Movement  ----------------------------------*/
 
 //Moves the ball around the canvas
 var moveBall = function(){
@@ -120,7 +121,6 @@ var moveBall = function(){
 
     //Check to see if collisions happened; if so, change velocities
     collisionCheck();
-    //colorCheck();
 
     //Draw the ball in its new location
     ctx.fillStyle = "#000000";
@@ -143,10 +143,14 @@ var moveBall = function(){
     }
 };
 
+/*-------------------------------- Unit Collision -----------------------------------*/
+
 //Checks to see if the ball has collided:
 //with the edge of the canvas - DONE
 //with the paddle - DONE
 //with bricks - IN PROGRESS
+//with the paddle - DONE
+//with bricks - TOP/BOTTOM DONE
 var collisionCheck = function(){
     //First check if the ball is hitting bottom (which means you lose)
     if (bally >= c.height-ballr) {
@@ -179,34 +183,44 @@ var collisionCheck = function(){
     var color4 = ctx.getImageData(ballx+ballr+1, bally+ballr+1,1,1);
 
     //Check if any of the 4 corners are now colored
-    isColored(color1);
-    isColored(color2);
-    isColored(color3);
-    isColored(color4);
+    if(isBW(color1)){
+	if(isBW(color2)){
+	    if(isBW(color3)){
+		if(isBW(color4)){
+		}
+	    }
+	}
+    }
 }
-
 //If any pixel is not black/white, erase that brick
-var isColored = function(color){
+var isBW = function(color){
     var whiteOrBlack = (color.data[0]==255 && color.data[1]==255 && color.data[2]==255) || (color.data[0]==0 && color.data[1]==0 && color.data[2]==0)
     if(!whiteOrBlack){
-	var pixelColor = [color.data[0], color.data[1], color.data[2]];
-	//console.log(pixelColor);
 	eraseBrick2();
-	yvel *= -1;
     }
+    return whiteOrBlack;
 };
-
-//Erases the bricks at set x and y values
+//Erases the bricks at the preset x and y values
 var eraseBrick2 = function() {
     for (var i=0; i<6; i++) {
 	if ((ballx > i*brickWidths) && (ballx < (i+1)*brickWidths)) {
-	    //console.log("clearing");
-	    //console.log(i);
-	    ctx.clearRect(i*brickWidths, bally-ballr-brickHeights-1, brickWidths+2, brickHeights+2);
+	    ctx.clearRect(i*brickWidths, bally-ballr-brickHeights-1, brickWidths, brickHeights+1);
+	    //These 2 if statements currently don't work, so we can only interpret
+	    //top/bottom collisions
+	    //Check if ball is colliding from the side
+	    if((ballx-ballr)%brickWidths == 0 || (ballx+ballr)%brickWidths == 0){
+		xvel *= -1;
+	    }
+	    //Otherwise it's a top/bottom collision
+	    else {
+		yvel *= -1;
+	    }
 	    break;
 	}
     }
 }
+
+start.addEventListener("click",moveBall);
 
 //THIS REALLY ISN'T WORKING GUYS LET'S JUST HARDCODE IT
 //floodFills all pixels with same color as the collided one
@@ -250,5 +264,6 @@ var eraseBrick = function(c){
     }
 };
 */
+
 
 start.addEventListener("click", moveBall);
