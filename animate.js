@@ -30,8 +30,9 @@ var yvel = 1;
 //requestAnimationFrame ID
 var requestID;
 
-//boolean for if lost game
+//booleans for winning and losing the game
 var lost = false;
+var win = false;
 
 // the score box where score and loss status are added to
 var scoreBox = document.getElementById("score-box");
@@ -140,6 +141,12 @@ var moveBall = function(){
       score.innerHTML = "wooo";
       whenLost.innerHTML = "Sorry, you lost.";
     }
+    if (win) {
+        console.log("WIN!");
+        window.cancelAnimationFrame(requestID);
+        score.innerHTML ++;
+        whenLost.innerHTML = "Yay! You Won!" 
+    }
 };
 
 /*-------------------------------- Unit Collision -----------------------------------*/
@@ -194,6 +201,7 @@ var isBW = function(color){
     var whiteOrBlack = (color.data[0]==255 && color.data[1]==255 && color.data[2]==255) || (color.data[0]==0 && color.data[1]==0 && color.data[2]==0)
     if(!whiteOrBlack){
 	eraseBrick2();
+    checkWin();
     }
     return whiteOrBlack;
 };
@@ -215,6 +223,19 @@ var eraseBrick2 = function() {
 	    break;
 	}
     }
+}
+
+var checkWin = function() {
+    var k = ctx.getImageData(0,0,c.width, brickHeights*4);
+    for (var i; i<=k.length; i++) {
+        if (k[i]!=255 && k[i]!=0) {
+            win = false;
+        }
+        else {
+            win = true;
+        }
+    }
+
 }
 
 start.addEventListener("click",moveBall);
