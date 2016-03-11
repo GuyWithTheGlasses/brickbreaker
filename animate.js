@@ -132,8 +132,7 @@ var moveBall = function(){
     //Call this function again
     requestID = window.requestAnimationFrame(moveBall);
 
-
-    // handles situation when player lost
+    //Handles situation when player loses
     if (lost) {
       console.log("lost");
       console.log(lost);
@@ -147,8 +146,6 @@ var moveBall = function(){
 
 //Checks to see if the ball has collided:
 //with the edge of the canvas - DONE
-//with the paddle - DONE
-//with bricks - IN PROGRESS
 //with the paddle - DONE
 //with bricks - TOP/BOTTOM DONE
 var collisionCheck = function(){
