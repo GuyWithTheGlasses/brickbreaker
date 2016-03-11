@@ -30,6 +30,15 @@ var yvel = 1;
 //requestAnimationFrame ID
 var requestID;
 
+//boolean for if lost game
+var lost = false;
+
+// the score box where score and loss status are added to
+var scoreBox = document.getElementById("score-box");
+var score = document.getElementById("score");
+var whenLost = document.getElementById("lose-message");
+
+
 //Draw paddle at initial location
 ctx.fillRect(c.width/2, py, pwidth, pheight);
 
@@ -122,27 +131,42 @@ var moveBall = function(){
 
     //Call this function again
     requestID = window.requestAnimationFrame(moveBall);
+
+
+    // handles situation when player lost
+    if (lost) {
+      console.log("lost");
+      console.log(lost);
+      window.cancelAnimationFrame(requestID);
+      score.innerHTML = "wooo";
+      whenLost.innerHTML = "Sorry, you lost.";
+    }
 };
 
 //Checks to see if the ball has collided:
 //with the edge of the canvas - DONE
-//with the paddle - DONE 
+//with the paddle - DONE
 //with bricks - IN PROGRESS
 var collisionCheck = function(){
+    //First check if the ball is hitting bottom (which means you lose)
+    if (bally >= c.height-ballr) {
+      lost = true;
+    }
+
     //If the x value hits an extreme, negate xvel
     if (ballx <= ballr || ballx >= c.width-ballr){
 	xvel *= -1;
     }
-    //If the y value his an extreme, negate yvel
-    if (bally <= ballr || bally >= c.height-ballr){
-	yvel *= -1;
+    //If the y value hits an extreme, negate yvel
+    if (bally <= ballr){
+      yvel *= -1;
     }
     //Check if hitting the paddle from the top
     if (yvel > 0 && bally + ballr == py - 2 && ballx <= px + pwidth && ballx >= px){
 	console.log("hello");
 	yvel *= -1;
     }
-    
+
     //If we get through all of that, check brick collision
 
     //Get the pixel color from top left corner of ball's hitbox
@@ -153,7 +177,7 @@ var collisionCheck = function(){
     var color3 = ctx.getImageData(ballx-ballr-1, bally+ballr+1,1,1);
     //Bottom right corner
     var color4 = ctx.getImageData(ballx+ballr+1, bally+ballr+1,1,1);
-    
+
     //Check if any of the 4 corners are now colored
     isColored(color1);
     isColored(color2);
@@ -205,8 +229,8 @@ var eraseBrick = function(c){
 	var newPixColor = ctx.getImageData(newx, newy, 1, 1);
 
 	//If newPixel's color is the same as the first one, set it to white
-	if(newPixColor.data[0] == c[0] && 
-	   newPixColor.data[1] == c[1] && 
+	if(newPixColor.data[0] == c[0] &&
+	   newPixColor.data[1] == c[1] &&
 	   newPixColor.data[2] == c[2]){
 	    //Set the image color to white
 	    d[0] = 255; //red
@@ -227,4 +251,4 @@ var eraseBrick = function(c){
 };
 */
 
-start.addEventListener("click",moveBall);
+start.addEventListener("click", moveBall);

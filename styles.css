@@ -1,0 +1,23 @@
+body{
+  background-color: #336C6D;
+  padding: 5%;
+}
+
+#table{
+  display: table;
+}
+
+.table-cell{
+  display: table-cell;
+}
+
+#sidebar{
+    position: absolute;
+    top: 5%;
+    margin-left: 5%;
+    color: white;
+}
+
+#lose-message{
+  color: red;
+}

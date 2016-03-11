@@ -1,14 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  
+
   <head>
     <title>BrickBreaker</title>
     <meta charset="utf-8">
+    <link href="/styles.css" rel="stylesheet">
   </head>
 
   <body>
-    <center><canvas height="538" width="538" id="brick" style="border: solid"></canvas></center>
-    <button id="start">Start</button>
+    <div id="table">
+      <div class="table-cell">
+        <canvas height="538" width="538" id="brick" style="border: solid; background-color: white"></canvas>
+      </div>
+      <div class="table-cell" id="sidebar">
+        <h1>Welcome to BrickBreaker!</h1>
+        <p>
+          Your objective is to hit all the blocks with the ball by hitting it with the paddle. If the ball touches the bottom, you lose the game. Good luck!
+        </p>
+        <h3> Click start to begin game </h3>
+        <center><button id="start">Start</button></center>
+
+        <hr width="75%" style="margin-top: 5%">
+
+        <div>
+          <center id="score-box">
+            <h3><u>Score</u></h3>
+            <h2 id="score">0</h2>
+            <h3 id="lose-message"></h3>
+          </center>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="animate.js"></script>
 </html>
