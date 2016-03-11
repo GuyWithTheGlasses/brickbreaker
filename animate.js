@@ -111,7 +111,7 @@ var moveBall = function(){
 
     //Check to see if collisions happened; if so, change velocities
     collisionCheck();
-    colorCheck();
+    //colorCheck();
 
     //Draw the ball in its new location
     ctx.fillStyle = "#000000";
@@ -127,6 +127,7 @@ var moveBall = function(){
 //Checks to see if the ball has collided:
 //with the edge of the canvas - DONE
 //with the paddle - DONE 
+//with bricks - IN PROGRESS
 var collisionCheck = function(){
     //If the x value hits an extreme, negate xvel
     if (ballx <= ballr || ballx >= c.width-ballr){
@@ -141,12 +142,10 @@ var collisionCheck = function(){
 	console.log("hello");
 	yvel *= -1;
     }
-};
+    
+    //If we get through all of that, check brick collision
 
-//Checks to see if the color of the background changes
-//aka see if the ball has collided with a brick
-var colorCheck = function(){
-    //Get the pixel colors from top left corner of ball's hitbox
+    //Get the pixel color from top left corner of ball's hitbox
     var color1 = ctx.getImageData(ballx-ballr-1, bally-ballr-1,1,1);
     //Top right corner
     var color2 = ctx.getImageData(ballx+ballr+1, bally-ballr-1,1,1);
@@ -155,33 +154,32 @@ var colorCheck = function(){
     //Bottom right corner
     var color4 = ctx.getImageData(ballx+ballr+1, bally+ballr+1,1,1);
     
+    //Check if any of the 4 corners are now colored
     isColored(color1);
     isColored(color2);
     isColored(color3);
     isColored(color4);
 }
 
-//If the color of the background is no longer black/white
-//bounce the ball and erase the brick it touches
+//If any pixel is not black/white, erase that brick
 var isColored = function(color){
-    var whiteOrBlack = (color.data[0]==255 && color.data[1]==255 && color.data[2]==255) 
-	|| (color.data[0]==0 && color.data[1]==0 && color.data[2]==0)
+    var whiteOrBlack = (color.data[0]==255 && color.data[1]==255 && color.data[2]==255) || (color.data[0]==0 && color.data[1]==0 && color.data[2]==0)
     if(!whiteOrBlack){
 	var pixelColor = [color.data[0], color.data[1], color.data[2]];
-	console.log(pixelColor);
-	eraseBrick2(pixelColor);
-    } 
-    return whiteOrBlack;
+	//console.log(pixelColor);
+	eraseBrick2();
+	yvel *= -1;
+    }
 };
 
 //Erases the bricks at set x and y values
-var eraseBrick2 = function(c) {
+var eraseBrick2 = function() {
     for (var i=0; i<6; i++) {
 	if ((ballx > i*brickWidths) && (ballx < (i+1)*brickWidths)) {
-	    console.log("clearing");
-	    console.log(i);
-	    ctx.clearRect(i*brickWidths,bally-ballr-brickHeights-1,brickWidths,brickHeights);
-	    yvel *= -1;
+	    //console.log("clearing");
+	    //console.log(i);
+	    ctx.clearRect(i*brickWidths, bally-ballr-brickHeights-1, brickWidths+2, brickHeights+2);
+	    break;
 	}
     }
 }
